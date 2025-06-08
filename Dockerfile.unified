@@ -1,0 +1,111 @@
+# Unified Dockerfile for CrewAI FastAPI with Neo4j GDS support
+FROM python:3.11.11-slim
+
+# Install system dependencies including Java for GDS building
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    openjdk-17-jdk \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Install Poetry
+RUN pip install poetry
+
+# Copy poetry files and install Python dependencies
+COPY pyproject.toml poetry.lock ./
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-dev
+
+# Install uvx for MCP tools
+RUN pip install uv
+
+# Copy Graph Data Science source code
+COPY graph-data-science/ ./graph-data-science/
+
+# Build GDS plugin
+WORKDIR /app/graph-data-science
+RUN chmod +x ./gradlew && \
+    ./gradlew :open-packaging:shadowCopy
+
+# Create GDS artifacts directory
+RUN mkdir -p /app/gds-artifacts && \
+    cp build/distributions/open-gds-*.jar /app/gds-artifacts/
+
+# Return to app directory
+WORKDIR /app
+
+# Copy application code
+COPY main.py cai.py ./
+COPY sample.env .env
+COPY start.sh ./
+COPY README.md GRAPH_DATA_SCIENCE.md ./
+
+# Make start script executable
+RUN chmod +x start.sh
+
+# Create startup script that handles GDS plugin
+RUN cat > /app/start-with-gds.sh << 'EOF'
+#!/bin/bash
+
+echo "🚀 Starting CrewAI Neo4j FastAPI Server with Graph Data Science support..."
+
+# Check if .env file exists
+if [ ! -f ".env" ]; then
+    echo "📝 Using sample.env as .env..."
+    cp sample.env .env
+fi
+
+# Load environment variables
+source .env
+
+# Check required environment variables
+if [ -z "$OPENAI_API_KEY" ]; then
+    echo "⚠️  Warning: OPENAI_API_KEY not set in .env file"
+fi
+
+if [ -z "$NEO4J_URI" ]; then
+    echo "⚠️  Warning: NEO4J_URI not set, using default bolt://localhost:7687"
+    export NEO4J_URI="bolt://localhost:7687"
+fi
+
+if [ -z "$NEO4J_USERNAME" ]; then
+    echo "⚠️  Warning: NEO4J_USERNAME not set, using default 'neo4j'"
+    export NEO4J_USERNAME="neo4j"
+fi
+
+if [ -z "$NEO4J_PASSWORD" ]; then
+    echo "⚠️  Warning: NEO4J_PASSWORD not set, using default 'password'"
+    export NEO4J_PASSWORD="password"
+fi
+
+# Set default port if not specified
+if [ -z "$PORT" ]; then
+    export PORT=12000
+fi
+
+echo "📈 Graph Data Science plugin available at: /app/gds-artifacts/"
+echo "📚 GDS Documentation: See GRAPH_DATA_SCIENCE.md"
+echo "🌐 Starting FastAPI server on port $PORT..."
+
+# Start the FastAPI server
+exec poetry run uvicorn main:app --host 0.0.0.0 --port $PORT
+EOF
+
+RUN chmod +x /app/start-with-gds.sh
+
+# Expose port
+EXPOSE 12000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:12000/health || exit 1
+
+# Environment variables for GDS
+ENV GDS_PLUGIN_PATH=/app/gds-artifacts
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+
+# Run the application with GDS support
+CMD ["/app/start-with-gds.sh"]
