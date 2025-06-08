@@ -15,6 +15,10 @@ from crewai import Agent, Task, Crew
 from crewai_tools import MCPServerAdapter
 from mcp import StdioServerParameters
 import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Create a StdioServerParameters object
 server_params=[
@@ -40,40 +44,72 @@ def log_task_callback(output):
 
 # Create and run Crew
 def run_crew_query(query: str):
-
-    with MCPServerAdapter(server_params) as tools:
+    """
+    Process a query using CrewAI with Neo4j MCP tools
     
-        print(f"Available tools from Stdio MCP server: {[tool.name for tool in tools]}")
-
-        analyst_agent = Agent(
-            role="Local Data Processor",
-            goal="Process data using a local Stdio-based tool.",
-            backstory="An AI that leverages local scripts via MCP for specialized tasks.",
-            tools=tools,
-            reasoning=False, # Optional
-            verbose=False, # Optional
-            step_callback=log_step_callback, # Optional
-            # llm=llm, # Optional - Remove if using OpenAI
-        )
+    Args:
+        query (str): Natural language query about the Neo4j database
         
-        # Passing query directly into task
-        processing_task = Task(
-            description="""Process the following query about the Neo4j graph database: {query}
+    Returns:
+        dict: Result containing the processed answer
+    """
+    try:
+        # Validate environment variables
+        required_env_vars = ["OPENAI_API_KEY", "NEO4J_URI", "NEO4J_USERNAME", "NEO4J_PASSWORD"]
+        missing_vars = [var for var in required_env_vars if not os.getenv(var)]
+        
+        if missing_vars:
+            raise ValueError(f"Missing required environment variables: {', '.join(missing_vars)}")
+
+        with MCPServerAdapter(server_params) as tools:
+        
+            print(f"Available tools from Stdio MCP server: {[tool.name for tool in tools]}")
+
+            analyst_agent = Agent(
+                role="Neo4j Data Analyst",
+                goal="Analyze and query Neo4j graph database to provide comprehensive answers to user questions.",
+                backstory="""You are an expert data analyst specializing in graph databases and Neo4j. 
+                You have deep knowledge of Cypher query language and can interpret complex graph relationships 
+                to provide meaningful insights from the data.""",
+                tools=tools,
+                reasoning=True, # Enable reasoning for better analysis
+                verbose=True, # Enable verbose for debugging
+                step_callback=log_step_callback, # Optional
+                # llm=llm, # Optional - Remove if using OpenAI
+            )
             
-            Provide a detailed and comprehensive answer to the query.""",
-            expected_output="A comprehensive answer to the query: {query}",
-            agent=analyst_agent,
-            callback=log_task_callback, # Optional
-        )
+            # Passing query directly into task
+            processing_task = Task(
+                description="""Analyze the following query about the Neo4j graph database: {query}
+                
+                Use the available Neo4j tools to:
+                1. Understand what data the user is asking about
+                2. Construct appropriate Cypher queries to retrieve the relevant information
+                3. Analyze the results and provide insights
+                4. Present a clear, comprehensive answer to the user's question
+                
+                Be thorough in your analysis and provide context for your findings.""",
+                expected_output="""A comprehensive, well-structured answer that includes:
+                - Direct answer to the query: {query}
+                - Supporting data and evidence from the Neo4j database
+                - Any relevant insights or patterns discovered
+                - Clear explanation of the methodology used""",
+                agent=analyst_agent,
+                callback=log_task_callback, # Optional
+            )
+            
+            data_crew = Crew(
+                agents=[analyst_agent],
+                tasks=[processing_task],
+                verbose=True
+            )
         
-        data_crew = Crew(
-            agents=[analyst_agent],
-            tasks=[processing_task],
-            verbose=False
-        )
-    
-        result = data_crew.kickoff(inputs={"query": query})
-        return {"result": result}
+            result = data_crew.kickoff(inputs={"query": query})
+            return {"result": result, "status": "success"}
+            
+    except Exception as e:
+        print(f"Error in run_crew_query: {str(e)}")
+        return {"error": str(e), "status": "error"}
 
 # For running as a script
 # ie poetry run python cai.py
