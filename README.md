@@ -56,6 +56,22 @@ cd crewai-mcp-neo4j-fastapi
 docker-compose up
 ```
 
+### Option 4: Unified Docker Setup (All-in-One)
+
+For a complete setup with both CrewAI FastAPI and Neo4j GDS in optimized containers:
+
+```bash
+# Build and run unified setup
+./build-unified.sh
+docker-compose -f docker-compose.unified.yml up
+
+# Or build standalone unified container
+docker build -f Dockerfile.unified -t crewai-neo4j-gds .
+docker run -p 12000:12000 crewai-neo4j-gds
+```
+
+See [DOCKER_UNIFIED.md](DOCKER_UNIFIED.md) for complete unified Docker documentation.
+
 ## Configuration
 
 ### Environment Variables
