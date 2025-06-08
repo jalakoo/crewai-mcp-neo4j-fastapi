@@ -5,6 +5,10 @@ from cai import run_crew_query
 import uvicorn
 import os
 from typing import Dict, Any
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 class QueryRequest(BaseModel):
     query: str
@@ -49,6 +53,7 @@ async def health_check():
 
 @app.post("/crewai", response_model=Dict[str, Any])
 async def query_crew_endpoint(request: QueryRequest):
+<<<<<<< HEAD
     """
     Process a natural language query about Neo4j graph database data using CrewAI
     
@@ -60,6 +65,12 @@ async def query_crew_endpoint(request: QueryRequest):
     """
     try:
         print(f'/crewai endpoint: Input query: {request.query}')
+=======
+    """Process queries using CrewAI and Neo4j MCP"""
+    print(f'/crewai endpoint: Input query: {request.query}')
+
+    try:
+>>>>>>> origin/feat/production-deployment-setup
         result = run_crew_query(request.query)
         return result
     except Exception as e:

@@ -6,7 +6,7 @@ authors = ["jalakoo <jalakoo@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.11.11"
+python = ">=3.11,<3.13"
 uvicorn = "^0.34.3"
 crewai = "^0.121.1"
 crewai-tools = {extras = ["mcp"], version = "^0.46.0"}
