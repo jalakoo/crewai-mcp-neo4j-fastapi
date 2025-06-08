@@ -11,6 +11,7 @@ A production-ready FastAPI server that uses CrewAI and Neo4j MCP (Model Context 
 - 🔧 **Environment Configuration**: Flexible configuration via environment variables
 - 🌐 **CORS Support**: Ready for web application integration
 - 📊 **Health Checks**: Built-in health monitoring endpoints
+- 📈 **Graph Data Science**: Includes Neo4j GDS library for advanced graph algorithms
 
 ## Requirements
 
@@ -24,8 +25,8 @@ A production-ready FastAPI server that uses CrewAI and Neo4j MCP (Model Context 
 ### Option 1: Automated Setup
 
 ```bash
-# Clone and setup
-git clone https://github.com/TradieMate/crewai-mcp-neo4j-fastapi.git
+# Clone and setup (includes Graph Data Science submodule)
+git clone --recursive https://github.com/TradieMate/crewai-mcp-neo4j-fastapi.git
 cd crewai-mcp-neo4j-fastapi
 ./setup.sh
 ```
@@ -83,11 +84,11 @@ ALLOWED_ORIGINS=*
 
 ### Neo4j Setup
 
-#### Local Neo4j
+#### Local Neo4j with Graph Data Science
 ```bash
-# Using Docker
+# Using Docker with GDS plugin
 docker run \
-    --name neo4j \
+    --name neo4j-gds \
     -p7474:7474 -p7687:7687 \
     -d \
     -v $HOME/neo4j/data:/data \
@@ -95,13 +96,24 @@ docker run \
     -v $HOME/neo4j/import:/var/lib/neo4j/import \
     -v $HOME/neo4j/plugins:/plugins \
     --env NEO4J_AUTH=neo4j/password \
-    neo4j:latest
+    --env NEO4J_PLUGINS='["graph-data-science"]' \
+    neo4j:5.15-enterprise
 ```
 
 #### Neo4j Aura (Cloud)
 1. Create a free account at [Neo4j Aura](https://neo4j.com/cloud/aura/)
 2. Create a new database instance
 3. Use the provided connection details in your `.env` file
+4. Note: Aura includes Graph Data Science algorithms by default
+
+#### Building Graph Data Science Plugin (Optional)
+If you want to build the GDS plugin from source:
+```bash
+cd graph-data-science
+./gradlew :open-packaging:shadowCopy
+# Copy the built JAR to your Neo4j plugins directory
+cp build/distributions/open-gds-*.jar $HOME/neo4j/plugins/
+```
 
 ## API Endpoints
 
@@ -122,9 +134,20 @@ docker run \
 
 #### Query the Database
 ```bash
+# Basic graph query
 curl -X POST "http://localhost:12000/crewai" \
      -H "Content-Type: application/json" \
      -d '{"query": "What are the most connected nodes in the graph?"}'
+
+# Graph Data Science algorithm query
+curl -X POST "http://localhost:12000/crewai" \
+     -H "Content-Type: application/json" \
+     -d '{"query": "Run PageRank algorithm on the graph and show the top 10 nodes"}'
+
+# Community detection query
+curl -X POST "http://localhost:12000/crewai" \
+     -H "Content-Type: application/json" \
+     -d '{"query": "Find communities in the graph using Louvain algorithm"}'
 ```
 
 #### Health Check
@@ -179,8 +202,26 @@ The application is ready for deployment on:
                                               ┌─────────────────┐
                                               │   Neo4j         │
                                               │   Database      │
+                                              │   + GDS Plugin  │
+                                              └─────────────────┘
+                                                       │
+                                                       ▼
+                                              ┌─────────────────┐
+                                              │ Graph Data      │
+                                              │ Science Library │
+                                              │ (Submodule)     │
                                               └─────────────────┘
 ```
+
+### Graph Data Science Integration
+
+The repository includes the Neo4j Graph Data Science library as a Git submodule, providing access to:
+
+- **Graph Algorithms**: PageRank, Betweenness Centrality, Closeness Centrality
+- **Community Detection**: Louvain, Label Propagation, Weakly Connected Components
+- **Path Finding**: Shortest Path, All Pairs Shortest Path, A* Search
+- **Similarity**: Node Similarity, K-Nearest Neighbors
+- **Machine Learning**: Node Classification, Link Prediction, Graph Embeddings
 
 ## Troubleshooting
 

@@ -1,0 +1,3 @@
+[submodule "graph-data-science"]
+	path = graph-data-science
+	url = https://github.com/TradieMate/graph-data-science.git
