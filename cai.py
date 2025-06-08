@@ -65,46 +65,104 @@ def run_crew_query(query: str):
         
             print(f"Available tools from Stdio MCP server: {[tool.name for tool in tools]}")
 
-            analyst_agent = Agent(
-                role="Neo4j Data Analyst",
-                goal="Analyze and query Neo4j graph database to provide comprehensive answers to user questions.",
-                backstory="""You are an expert data analyst specializing in graph databases and Neo4j. 
-                You have deep knowledge of Cypher query language and can interpret complex graph relationships 
-                to provide meaningful insights from the data.""",
+            # Google Ads Campaign Analyst
+            ads_analyst = Agent(
+                role="Google Ads Campaign Analyst",
+                goal="Analyze Google Ads campaign performance data to identify optimization opportunities and provide actionable recommendations for improving ROI, CTR, and conversion rates.",
+                backstory="""You are a seasoned digital marketing analyst specializing in Google Ads optimization for trade businesses. 
+                You have extensive experience analyzing campaign performance metrics, keyword effectiveness, audience targeting, 
+                and conversion funnels. You excel at identifying underperforming campaigns, discovering high-value keywords, 
+                and recommending budget reallocation strategies that maximize return on ad spend (ROAS) for tradespeople and contractors.""",
                 tools=tools,
-                reasoning=True, # Enable reasoning for better analysis
-                verbose=True, # Enable verbose for debugging
-                step_callback=log_step_callback, # Optional
+                reasoning=True,
+                verbose=True,
+                step_callback=log_step_callback,
                 # llm=llm, # Optional - Remove if using OpenAI
             )
             
-            # Passing query directly into task
-            processing_task = Task(
-                description="""Analyze the following query about the Neo4j graph database: {query}
-                
-                Use the available Neo4j tools to:
-                1. Understand what data the user is asking about
-                2. Construct appropriate Cypher queries to retrieve the relevant information
-                3. Analyze the results and provide insights
-                4. Present a clear, comprehensive answer to the user's question
-                
-                Be thorough in your analysis and provide context for your findings.""",
-                expected_output="""A comprehensive, well-structured answer that includes:
-                - Direct answer to the query: {query}
-                - Supporting data and evidence from the Neo4j database
-                - Any relevant insights or patterns discovered
-                - Clear explanation of the methodology used""",
-                agent=analyst_agent,
-                callback=log_task_callback, # Optional
+            # Website Optimization Specialist
+            web_optimizer = Agent(
+                role="Website Optimization Specialist", 
+                goal="Analyze website performance data and user behavior to provide actionable recommendations for improving conversion rates, user experience, and lead generation.",
+                backstory="""You are a conversion rate optimization expert specializing in trade business websites. 
+                You understand how tradespeople's potential customers behave online, what drives them to request quotes, 
+                and how to optimize landing pages, contact forms, and user journeys. You analyze traffic patterns, 
+                bounce rates, conversion funnels, and user engagement to provide specific, implementable recommendations 
+                that turn website visitors into qualified leads.""",
+                tools=tools,
+                reasoning=True,
+                verbose=True,
+                step_callback=log_step_callback,
+                # llm=llm, # Optional - Remove if using OpenAI
             )
             
-            data_crew = Crew(
-                agents=[analyst_agent],
-                tasks=[processing_task],
-                verbose=True
+            # Determine which agent should handle the query based on content
+            query_lower = query.lower()
+            
+            if any(keyword in query_lower for keyword in ['ads', 'campaign', 'google ads', 'ppc', 'cpc', 'roas', 'ad spend', 'keywords', 'bidding']):
+                primary_agent = ads_analyst
+                task_focus = "Google Ads campaign optimization"
+            elif any(keyword in query_lower for keyword in ['website', 'conversion', 'landing page', 'traffic', 'bounce rate', 'user experience', 'seo']):
+                primary_agent = web_optimizer  
+                task_focus = "website optimization"
+            else:
+                # Default to ads analyst for general marketing queries
+                primary_agent = ads_analyst
+                task_focus = "digital marketing analytics"
+            
+            # Marketing Analytics Task
+            marketing_analysis_task = Task(
+                description=f"""Analyze the following marketing query for TradieMate: {{query}}
+                
+                Focus on {task_focus} and use the available Neo4j tools to:
+                
+                1. **Data Discovery**: Examine the database schema to understand available marketing data
+                2. **Query Construction**: Build targeted Cypher queries to extract relevant campaign/website performance data
+                3. **Performance Analysis**: Analyze metrics such as:
+                   - Campaign performance (CTR, CPC, conversion rates, ROAS)
+                   - Website analytics (traffic sources, user behavior, conversion funnels)
+                   - Keyword effectiveness and search trends
+                   - Audience segments and targeting performance
+                4. **Insight Generation**: Identify patterns, trends, and optimization opportunities
+                5. **Actionable Recommendations**: Provide specific, implementable strategies
+                
+                Consider the unique needs of trade businesses and their customers when analyzing the data.""",
+                expected_output="""A comprehensive marketing analysis report that includes:
+                
+                **Executive Summary**
+                - Key findings and primary recommendations for: {{query}}
+                
+                **Performance Metrics**
+                - Current performance data with supporting evidence from Neo4j
+                - Benchmark comparisons and trend analysis
+                
+                **Optimization Opportunities**
+                - Specific areas for improvement with quantified potential impact
+                - Budget reallocation recommendations
+                - Targeting and messaging improvements
+                
+                **Action Plan**
+                - Prioritized list of actionable recommendations
+                - Implementation timeline and expected outcomes
+                - Success metrics to track progress
+                
+                **Supporting Data**
+                - Relevant Cypher queries used
+                - Data visualizations or insights discovered
+                - Methodology explanation""",
+                agent=primary_agent,
+                callback=log_task_callback,
+            )
+            
+            # Create marketing analytics crew
+            marketing_crew = Crew(
+                agents=[ads_analyst, web_optimizer],
+                tasks=[marketing_analysis_task],
+                verbose=True,
+                planning=True,  # Enable planning for better coordination
             )
         
-            result = data_crew.kickoff(inputs={"query": query})
+            result = marketing_crew.kickoff(inputs={"query": query})
             return {"result": result, "status": "success"}
             
     except Exception as e:
@@ -114,8 +172,8 @@ def run_crew_query(query: str):
 # For running as a script
 # ie poetry run python cai.py
 if __name__ == "__main__":
-    result = run_crew_query("Which staff member manages the delivery service delivering the most orders?")
+    result = run_crew_query("What are the top performing Google Ads campaigns and how can we optimize budget allocation to improve ROAS?")
     print(f"""
-        Query completed!
+        Marketing Analysis completed!
         result: {result}
     """)

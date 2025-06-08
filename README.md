@@ -1,17 +1,18 @@
-# CrewAI Neo4j FastAPI Server
+# TradieMate Marketing Analytics Platform
 
-A production-ready FastAPI server that uses CrewAI and Neo4j MCP (Model Context Protocol) to process natural language queries about data within a Neo4j graph database.
+A production-ready FastAPI server that uses CrewAI and Neo4j MCP (Model Context Protocol) to analyze Google Ads campaigns and website performance data, providing actionable optimization recommendations for trade businesses.
 
 ## Features
 
-- 🤖 **CrewAI Integration**: Intelligent AI agents for data analysis
-- 🗄️ **Neo4j MCP Support**: Direct integration with Neo4j via Model Context Protocol
+- 🎯 **Marketing Analytics Agents**: Specialized AI agents for Google Ads and website optimization
+- 📊 **Campaign Performance Analysis**: ROI, ROAS, CTR, and conversion rate optimization
+- 🌐 **Website Optimization**: Landing page, conversion funnel, and user experience analysis
+- 🗄️ **Neo4j MCP Support**: Direct integration with marketing data via Model Context Protocol
 - 🚀 **FastAPI**: Modern, fast web framework with automatic API documentation
 - 🐳 **Docker Support**: Complete containerization with Docker Compose
 - 🔧 **Environment Configuration**: Flexible configuration via environment variables
-- 🌐 **CORS Support**: Ready for web application integration
-- 📊 **Health Checks**: Built-in health monitoring endpoints
-- 📈 **Graph Data Science**: Includes Neo4j GDS library for advanced graph algorithms
+- 📈 **Graph Data Science**: Advanced analytics for marketing attribution and customer journey mapping
+- 🎯 **Trade Business Focus**: Optimized for contractors, plumbers, electricians, and other trade services
 
 ## Requirements
 
@@ -146,24 +147,58 @@ cp build/distributions/open-gds-*.jar $HOME/neo4j/plugins/
 | POST | `/crewai` | Process natural language queries |
 | GET | `/docs` | Interactive API documentation |
 
-### Example Usage
+## Marketing Analytics Agents
 
-#### Query the Database
+The platform includes two specialized AI agents for comprehensive marketing analysis:
+
+### 🎯 Google Ads Campaign Analyst
+- **Focus**: PPC campaign optimization, keyword analysis, ROAS improvement
+- **Triggers**: Queries about ads, campaigns, keywords, bidding, CPC, ROAS
+- **Expertise**: Budget allocation, audience targeting, conversion optimization
+
+### 🌐 Website Optimization Specialist  
+- **Focus**: Conversion rate optimization, user experience, lead generation
+- **Triggers**: Queries about website, landing pages, traffic, conversions, SEO
+- **Expertise**: Funnel analysis, page optimization, mobile performance
+
+See [MARKETING_AGENTS.md](MARKETING_AGENTS.md) for detailed agent documentation.
+
+### Example Marketing Queries
+
+#### Google Ads Optimization
 ```bash
-# Basic graph query
+# Campaign performance analysis
 curl -X POST "http://localhost:12000/crewai" \
      -H "Content-Type: application/json" \
-     -d '{"query": "What are the most connected nodes in the graph?"}'
+     -d '{"query": "What are our top performing Google Ads campaigns and how can we optimize budget allocation?"}'
 
-# Graph Data Science algorithm query
+# Keyword analysis
 curl -X POST "http://localhost:12000/crewai" \
      -H "Content-Type: application/json" \
-     -d '{"query": "Run PageRank algorithm on the graph and show the top 10 nodes"}'
+     -d '{"query": "Which keywords are driving the most qualified leads for our plumbing services?"}'
 
-# Community detection query
+# ROAS optimization
 curl -X POST "http://localhost:12000/crewai" \
      -H "Content-Type: application/json" \
-     -d '{"query": "Find communities in the graph using Louvain algorithm"}'
+     -d '{"query": "How can we improve our electrical services ads ROAS in the Sydney market?"}'
+```
+
+#### Website Optimization
+```bash
+# Conversion analysis
+curl -X POST "http://localhost:12000/crewai" \
+     -H "Content-Type: application/json" \
+     -d '{"query": "Why is our landing page conversion rate declining and how can we fix it?"}'
+
+# Mobile optimization
+curl -X POST "http://localhost:12000/crewai" \
+     -H "Content-Type: application/json" \
+     -d '{"query": "How can we improve quote request completions on mobile devices?"}'
+
+# Traffic source analysis
+curl -X POST "http://localhost:12000/crewai" \
+     -H "Content-Type: application/json" \
+     -d '{"query": "What traffic sources are bringing the highest quality leads?"}'
 ```
 
 #### Health Check
