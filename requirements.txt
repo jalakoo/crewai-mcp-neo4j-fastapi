@@ -1,0 +1,33 @@
+# Production requirements for TradieMate Marketing Analytics Backend
+# Generated from pyproject.toml
+
+# Core FastAPI and server
+fastapi==0.115.12
+uvicorn[standard]==0.34.3
+pydantic==2.11.5
+python-dotenv==1.0.0
+
+# CrewAI and AI tools
+crewai==0.121.1
+crewai-tools[mcp]==0.46.0
+
+# Additional dependencies
+uv==0.5.0
+
+# Production dependencies
+gunicorn==21.2.0
+httpx==0.25.2
+aiofiles==23.2.1
+
+# Security and monitoring
+python-multipart==0.0.6
+slowapi==0.1.9
+prometheus-client==0.19.0
+
+# Database and caching
+redis==5.0.1
+psycopg2-binary==2.9.9
+
+# Logging and monitoring
+structlog==23.2.0
+sentry-sdk[fastapi]==1.38.0

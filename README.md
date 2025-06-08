@@ -1,155 +1,212 @@
-# TradieMate Marketing Analytics Platform
+# 🚀 TradieMate Marketing Analytics - Unified Platform
 
-A production-ready FastAPI server that uses CrewAI and Neo4j MCP (Model Context Protocol) to analyze Google Ads campaigns and website performance data, providing actionable optimization recommendations for trade businesses.
+A complete AI-powered marketing analytics platform that combines a modern chat interface with specialized CrewAI agents to provide Google Ads optimization and website performance analysis for trade businesses.
 
-## Features
+## ✨ Platform Overview
 
-- 🎯 **Marketing Analytics Agents**: Specialized AI agents for Google Ads and website optimization
-- 📊 **Campaign Performance Analysis**: ROI, ROAS, CTR, and conversion rate optimization
-- 🌐 **Website Optimization**: Landing page, conversion funnel, and user experience analysis
-- 🗄️ **Neo4j MCP Support**: Direct integration with marketing data via Model Context Protocol
-- 🚀 **FastAPI**: Modern, fast web framework with automatic API documentation
-- 🐳 **Docker Support**: Complete containerization with Docker Compose
-- 🔧 **Environment Configuration**: Flexible configuration via environment variables
-- 📈 **Graph Data Science**: Advanced analytics for marketing attribution and customer journey mapping
-- 🎯 **Trade Business Focus**: Optimized for contractors, plumbers, electricians, and other trade services
+This unified platform includes:
+- **🎨 Modern Chat Interface**: Intuitive web UI for interacting with marketing agents
+- **🤖 Specialized AI Agents**: CrewAI-powered agents for Google Ads and website optimization  
+- **📊 Real-time Analytics**: Live marketing performance insights and recommendations
+- **🗄️ Graph Database**: Neo4j for complex marketing data relationships
+- **🔒 Production Ready**: Enterprise-grade security, monitoring, and deployment
 
-## Requirements
+## 🏗️ Architecture
 
-- [Poetry](https://python-poetry.org) for dependency management
-- [OpenAI API Key](https://platform.openai.com/api-keys) for LLM inference
-- Running [Neo4j](https://neo4j.com) database (local or cloud)
-- Python 3.11.11
+```
+Frontend (Next.js)     Backend (FastAPI + CrewAI)     Database (Neo4j)
+├─ Chat Interface  →   ├─ Marketing Agents        →   ├─ Campaign Data
+├─ TradieMate UI       ├─ Google Ads Analyst          ├─ Customer Journey
+├─ Real-time Chat      ├─ Website Optimizer           ├─ Attribution Models
+└─ Supabase Auth       └─ Performance Analytics       └─ Graph Analytics
+```
 
-## Quick Start
+## 🚀 Features
 
-### Option 1: Automated Setup
+### Chat Interface
+- 💬 **Conversational AI**: Natural language queries for marketing insights
+- 🎨 **TradieMate Branding**: Custom branded interface for trade businesses
+- 📱 **Responsive Design**: Works on desktop, tablet, and mobile
+- 🔄 **Real-time Updates**: Live chat with streaming responses
+- 📚 **Chat History**: Persistent conversation storage with Supabase
+
+### AI Marketing Agents
+- 🎯 **Google Ads Analyst**: Campaign optimization and performance analysis
+- 🌐 **Website Optimizer**: Landing page and conversion rate optimization
+- 📊 **Marketing Analytics**: ROI, ROAS, CTR, and attribution analysis
+- 🔍 **Keyword Research**: Trade-specific keyword recommendations
+- 📈 **Performance Tracking**: Campaign and website performance monitoring
+
+### Technical Features
+- 🚀 **FastAPI Backend**: Modern, fast API with automatic documentation
+- 🗄️ **Neo4j Integration**: Graph database for complex marketing relationships
+- 🐳 **Docker Orchestration**: Complete containerized deployment
+- 🔒 **Production Security**: Rate limiting, input validation, API authentication
+- 📊 **Monitoring**: Health checks, logging, and performance metrics
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Docker and Docker Compose
+- OpenAI API Key ([Get one here](https://platform.openai.com/api-keys))
+- 8GB+ RAM recommended
+- Ports 3000, 7474, 7687, 12000, 12001, 54321-54323 available
+
+### One-Command Setup
 
 ```bash
-# Clone and setup (includes Graph Data Science submodule)
+# Clone the repository
 git clone --recursive https://github.com/TradieMate/crewai-mcp-neo4j-fastapi.git
 cd crewai-mcp-neo4j-fastapi
-./setup.sh
+
+# Run the automated setup
+./setup-full-stack.sh
 ```
 
-### Option 2: Manual Setup
+This will:
+1. ✅ Set up all environment configurations
+2. 🐳 Build and start all Docker services
+3. 🗄️ Initialize Neo4j with sample data
+4. 🎨 Launch the chat interface
+5. 🤖 Start the CrewAI backend
 
-1. **Install dependencies:**
-   ```bash
-   poetry install
-   ```
+### Access Your Platform
 
-2. **Configure environment:**
-   ```bash
-   cp sample.env .env
-   # Edit .env with your actual values
-   ```
+After setup completes (2-3 minutes):
 
-3. **Start the server:**
-   ```bash
-   poetry run uvicorn main:app --host 0.0.0.0 --port 12000 --reload
-   ```
+| Service | URL | Purpose |
+|---------|-----|---------|
+| **🎨 Chat Interface** | http://localhost:12001 | Main user interface |
+| **🔧 Backend API** | http://localhost:12000 | CrewAI FastAPI backend |
+| **🗄️ Neo4j Browser** | http://localhost:7474 | Database management |
+| **📊 API Docs** | http://localhost:12000/docs | Interactive API documentation |
 
-### Option 3: Docker Compose (Recommended)
+### First Steps
 
+1. **Open the chat interface**: http://localhost:12001
+2. **Select a marketing agent** from the dropdown
+3. **Start chatting**: Ask questions like:
+   - "Analyze my Google Ads performance for plumbing services"
+   - "How can I improve my electrician website's conversion rate?"
+   - "What keywords should I target for HVAC services?"
+
+## 🛠️ Development Setup
+
+### Backend Development
 ```bash
-# Start both the API server and Neo4j database
-docker-compose up
+# Install dependencies
+poetry install
+
+# Start backend only
+poetry run uvicorn main:app --host 0.0.0.0 --port 12000 --reload
 ```
 
-### Option 4: Unified Docker Setup (All-in-One)
-
-For a complete setup with both CrewAI FastAPI and Neo4j GDS in optimized containers:
-
+### Frontend Development
 ```bash
-# Build and run unified setup
-./build-unified.sh
-docker-compose -f docker-compose.unified.yml up
+# Navigate to frontend
+cd frontend
 
-# Or build standalone unified container
-docker build -f Dockerfile.unified -t crewai-neo4j-gds .
-docker run -p 12000:12000 crewai-neo4j-gds
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-See [DOCKER_UNIFIED.md](DOCKER_UNIFIED.md) for complete unified Docker documentation.
+### Manual Docker Setup
+```bash
+# Start all services
+docker-compose -f docker-compose.full-stack.yml up --build -d
 
-## Configuration
+# View logs
+docker-compose -f docker-compose.full-stack.yml logs -f
 
-### Environment Variables
+# Stop services
+docker-compose -f docker-compose.full-stack.yml down
+```
 
-Create a `.env` file with the following variables:
+## 📚 Documentation
+
+- **[🚀 Unified Platform Guide](UNIFIED_PLATFORM_GUIDE.md)**: Complete setup and usage guide
+- **[📋 Production Requirements](PRODUCTION_REQUIREMENTS.md)**: Environment variables and deployment requirements
+- **[🔒 Production Deployment](PRODUCTION_DEPLOYMENT.md)**: Enterprise deployment guide
+- **[🐳 Docker Setup](DOCKER_UNIFIED.md)**: Docker configuration and optimization
+
+## 💬 Example Chat Interactions
+
+### Google Ads Analysis
+```
+User: "Analyze my Google Ads performance for my plumbing business"
+
+Agent: 📊 Marketing Analytics Report
+
+Based on your plumbing business Google Ads data:
+
+## 💡 Key Insights
+1. Your "emergency plumber" keywords have 40% higher CTR than industry average
+2. Mobile traffic converts 25% better than desktop for urgent services
+3. Local service ads outperform search ads by 60% for immediate bookings
+
+## 🎯 Recommendations
+1. Increase budget allocation to emergency plumbing keywords
+2. Optimize mobile landing pages for faster booking
+3. Expand local service ads coverage to neighboring areas
+4. Add negative keywords to reduce irrelevant clicks
+
+## 📈 Performance Metrics
+- **CTR**: 3.2% (Industry avg: 2.1%)
+- **CPC**: $4.50 (Competitive for plumbing)
+- **Conversion Rate**: 8.5% (Above average)
+- **ROAS**: 420% (Excellent performance)
+```
+
+### Website Optimization
+```
+User: "How can I improve my electrician website's conversion rate?"
+
+Agent: 🌐 Website Optimization Analysis
+
+## 💡 Key Issues Identified
+1. Contact form is below the fold on mobile devices
+2. No clear pricing information visible
+3. Missing customer testimonials and reviews
+4. Slow page load time (4.2 seconds)
+
+## 🎯 Optimization Recommendations
+1. Move contact form above the fold with prominent CTA
+2. Add transparent pricing ranges for common services
+3. Display customer reviews prominently on homepage
+4. Optimize images and implement lazy loading
+5. Add click-to-call buttons for mobile users
+
+## 📈 Expected Impact
+- **Conversion Rate**: +35% improvement expected
+- **Page Load Time**: Reduce to <2 seconds
+- **Mobile Experience**: +50% better user engagement
+- **Lead Quality**: Higher intent leads with pricing transparency
+```
+
+## 🔧 Configuration
+
+### Required Environment Variables
 
 ```bash
-# OpenAI Configuration
+# Core Configuration
 OPENAI_API_KEY=your_openai_api_key_here
-
-# Neo4j Database Configuration
 NEO4J_URI=neo4j://localhost:7687
 NEO4J_USERNAME=neo4j
-NEO4J_PASSWORD=your_neo4j_password_here
+NEO4J_PASSWORD=tradiemate123
 
-# Server Configuration
-PORT=12000
-HOST=0.0.0.0
-
-# Environment
-ENVIRONMENT=development
-
-# CORS Configuration (for web access)
-ALLOWED_ORIGINS=*
+# Frontend Configuration
+CREWAI_BACKEND_URL=http://localhost:12000
+NEXT_PUBLIC_APP_NAME=TradieMate Marketing Analytics
 ```
 
-### Neo4j Setup
+See [PRODUCTION_REQUIREMENTS.md](PRODUCTION_REQUIREMENTS.md) for complete configuration details.
 
-#### Local Neo4j with Graph Data Science
-```bash
-# Using Docker with GDS plugin
-docker run \
-    --name neo4j-gds \
-    -p7474:7474 -p7687:7687 \
-    -d \
-    -v $HOME/neo4j/data:/data \
-    -v $HOME/neo4j/logs:/logs \
-    -v $HOME/neo4j/import:/var/lib/neo4j/import \
-    -v $HOME/neo4j/plugins:/plugins \
-    --env NEO4J_AUTH=neo4j/password \
-    --env NEO4J_PLUGINS='["graph-data-science"]' \
-    neo4j:5.15-enterprise
-```
+## 🤖 AI Marketing Agents
 
-#### Neo4j Aura (Cloud)
-1. Create a free account at [Neo4j Aura](https://neo4j.com/cloud/aura/)
-2. Create a new database instance
-3. Use the provided connection details in your `.env` file
-4. Note: Aura includes Graph Data Science algorithms by default
-
-#### Building Graph Data Science Plugin (Optional)
-If you want to build the GDS plugin from source:
-```bash
-cd graph-data-science
-./gradlew :open-packaging:shadowCopy
-# Copy the built JAR to your Neo4j plugins directory
-cp build/distributions/open-gds-*.jar $HOME/neo4j/plugins/
-```
-
-## API Endpoints
-
-### Base URL
-- **Local**: `http://localhost:12000`
-- **Production**: Your deployed URL
-
-### Available Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Root endpoint with basic information |
-| GET | `/health` | Health check endpoint |
-| POST | `/crewai` | Process natural language queries |
-| GET | `/docs` | Interactive API documentation |
-
-## Marketing Analytics Agents
-
-The platform includes two specialized AI agents for comprehensive marketing analysis:
+The platform includes specialized AI agents for comprehensive marketing analysis:
 
 ### 🎯 Google Ads Campaign Analyst
 - **Focus**: PPC campaign optimization, keyword analysis, ROAS improvement
@@ -161,7 +218,27 @@ The platform includes two specialized AI agents for comprehensive marketing anal
 - **Triggers**: Queries about website, landing pages, traffic, conversions, SEO
 - **Expertise**: Funnel analysis, page optimization, mobile performance
 
-See [MARKETING_AGENTS.md](MARKETING_AGENTS.md) for detailed agent documentation.
+### 📊 Marketing Analytics Generalist
+- **Focus**: Overall marketing strategy and cross-channel analysis
+- **Triggers**: General marketing queries, strategy questions, ROI analysis
+- **Expertise**: Attribution modeling, customer journey analysis, budget optimization
+
+## 🔌 API Endpoints
+
+### Base URLs
+- **Frontend**: `http://localhost:12001`
+- **Backend API**: `http://localhost:12000`
+- **Neo4j Browser**: `http://localhost:7474`
+
+### Available Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/` | Root endpoint with platform information |
+| GET | `/health` | Comprehensive health check |
+| POST | `/crewai` | Process marketing analytics queries |
+| GET | `/docs` | Interactive API documentation |
+| POST | `/api/chat/crewai` | Frontend chat interface endpoint |
 
 ### Example Marketing Queries
 
@@ -224,100 +301,150 @@ poetry run isort .
 poetry run mypy .
 ```
 
-## Deployment
+## 🚀 Production Deployment
 
-### Docker Production Build
+### Cloud Deployment Options
+
+#### Option 1: Vercel + Railway (Recommended)
 ```bash
-docker build -t crewai-neo4j-api .
-docker run -p 12000:12000 --env-file .env crewai-neo4j-api
+# Frontend: Deploy to Vercel
+# Backend: Deploy to Railway
+# Databases: Use managed services (Neo4j Aura, Supabase)
 ```
 
-### Cloud Deployment
-The application is ready for deployment on:
-- AWS ECS/Fargate
-- Google Cloud Run
-- Azure Container Instances
-- Heroku
-- Railway
-- Render
+#### Option 2: Docker Production
+```bash
+# Build production images
+docker-compose -f docker-compose.full-stack.yml build
 
-## Architecture
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   FastAPI       │    │   CrewAI        │    │   Neo4j MCP     │
-│   Web Server    │───▶│   AI Agents     │───▶│   Tools         │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                                                       │
-                                                       ▼
-                                              ┌─────────────────┐
-                                              │   Neo4j         │
-                                              │   Database      │
-                                              │   + GDS Plugin  │
-                                              └─────────────────┘
-                                                       │
-                                                       ▼
-                                              ┌─────────────────┐
-                                              │ Graph Data      │
-                                              │ Science Library │
-                                              │ (Submodule)     │
-                                              └─────────────────┘
+# Deploy with production configuration
+ENVIRONMENT=production docker-compose -f docker-compose.full-stack.yml up -d
 ```
 
-### Graph Data Science Integration
+#### Option 3: Kubernetes
+```bash
+# Use provided Kubernetes manifests
+kubectl apply -f k8s/
+```
 
-The repository includes the Neo4j Graph Data Science library as a Git submodule, providing access to:
+See [PRODUCTION_DEPLOYMENT.md](PRODUCTION_DEPLOYMENT.md) for detailed deployment guides.
 
-- **Graph Algorithms**: PageRank, Betweenness Centrality, Closeness Centrality
-- **Community Detection**: Louvain, Label Propagation, Weakly Connected Components
-- **Path Finding**: Shortest Path, All Pairs Shortest Path, A* Search
-- **Similarity**: Node Similarity, K-Nearest Neighbors
-- **Machine Learning**: Node Classification, Link Prediction, Graph Embeddings
+## 🏗️ Platform Architecture
 
-## Troubleshooting
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    TradieMate Platform                      │
+├─────────────────────────────────────────────────────────────┤
+│  Frontend (Next.js)          │  Backend (FastAPI + CrewAI) │
+│  ├─ Chat Interface           │  ├─ Marketing Agents        │
+│  ├─ TradieMate Branding      │  ├─ Google Ads Analyst      │
+│  ├─ Real-time Messaging      │  ├─ Website Optimizer       │
+│  └─ Supabase Integration     │  └─ Neo4j Graph Database    │
+├─────────────────────────────────────────────────────────────┤
+│                    Shared Services                          │
+│  ├─ Neo4j Graph Database (Marketing Data)                  │
+│  ├─ Supabase (User Data & Chat History)                    │
+│  └─ Docker Orchestration                                   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Data Flow
+```
+User Chat → Frontend → API Route → FastAPI Backend → CrewAI Agents → 
+Neo4j Tools → Graph Analytics → Formatted Response → Chat Interface
+```
+
+## 🛠️ Development
+
+### Running Tests
+```bash
+# Backend tests
+poetry run pytest
+
+# Frontend tests
+cd frontend && npm test
+```
+
+### Code Quality
+```bash
+# Backend formatting
+poetry run black .
+poetry run isort .
+poetry run mypy .
+
+# Frontend formatting
+cd frontend && npm run lint:fix
+```
+
+## 🔧 Troubleshooting
 
 ### Common Issues
 
-1. **MCP Neo4j Tool Not Found**
+1. **Services Not Starting**
    ```bash
-   # Install uvx and the MCP tool
-   poetry run pip install uv
-   uvx install mcp-neo4j-cypher
+   # Check Docker resources
+   docker system df
+   docker system prune
+   
+   # Restart services
+   docker-compose -f docker-compose.full-stack.yml restart
    ```
 
-2. **Neo4j Connection Issues**
-   - Verify Neo4j is running: `docker ps` or check Neo4j Desktop
-   - Check connection details in `.env` file
-   - Ensure firewall allows connections on port 7687
+2. **Frontend Can't Connect to Backend**
+   - Verify `CREWAI_BACKEND_URL` in frontend environment
+   - Check backend health: `curl http://localhost:12000/health`
 
-3. **OpenAI API Issues**
-   - Verify API key is correct and has credits
-   - Check API key permissions
+3. **Neo4j Connection Issues**
+   - Verify Neo4j credentials in `.env`
+   - Check Neo4j logs: `docker-compose logs neo4j`
 
 ### Logs
 ```bash
-# View application logs
-docker-compose logs app
+# View all logs
+docker-compose -f docker-compose.full-stack.yml logs -f
 
-# View Neo4j logs
-docker-compose logs neo4j
+# View specific service
+docker-compose -f docker-compose.full-stack.yml logs -f frontend
 ```
 
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+4. Add tests for new functionality
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
-## License
+### Development Guidelines
+- Follow TypeScript/Python best practices
+- Add comprehensive error handling
+- Include unit tests for new features
+- Update documentation for changes
+- Maintain backward compatibility
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 📄 License
 
-## Support
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-For issues and questions:
-- Create an issue on GitHub
-- Check the [CrewAI documentation](https://docs.crewai.com/)
-- Review [Neo4j MCP documentation](https://github.com/neo4j/mcp-neo4j)
+## 🆘 Support
+
+- **📖 Documentation**: [Unified Platform Guide](UNIFIED_PLATFORM_GUIDE.md)
+- **🐛 Bug Reports**: [GitHub Issues](https://github.com/TradieMate/crewai-mcp-neo4j-fastapi/issues)
+- **💬 Discussions**: [GitHub Discussions](https://github.com/TradieMate/crewai-mcp-neo4j-fastapi/discussions)
+- **📧 Email**: support@tradiemate.com
+
+## 🌟 Acknowledgments
+
+- [CrewAI](https://docs.crewai.com/) for the AI agent framework
+- [Neo4j](https://neo4j.com/) for the graph database and MCP tools
+- [FastAPI](https://fastapi.tiangolo.com/) for the backend framework
+- [Next.js](https://nextjs.org/) for the frontend framework
+- [Supabase](https://supabase.com/) for the user data backend
+
+---
+
+**Built with ❤️ for the trade industry by TradieMate**
+
+*Empowering trade businesses with AI-powered marketing analytics*

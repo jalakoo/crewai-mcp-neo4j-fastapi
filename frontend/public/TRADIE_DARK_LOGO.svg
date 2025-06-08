@@ -1,0 +1,29 @@
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- TradieMate Logo - Dark Theme -->
+  <rect width="200" height="60" fill="transparent"/>
+  
+  <!-- Icon -->
+  <g transform="translate(10, 10)">
+    <!-- Wrench Icon -->
+    <path d="M8 2L6 4L10 8L8 10L12 14L14 12L10 8L12 6L8 2Z" fill="#3B82F6" stroke="#1E40AF" stroke-width="1"/>
+    <!-- Hammer Icon -->
+    <path d="M20 8L18 6L22 2L24 4L20 8Z" fill="#EF4444" stroke="#DC2626" stroke-width="1"/>
+    <rect x="18" y="8" width="2" height="12" fill="#EF4444"/>
+    
+    <!-- Analytics Chart -->
+    <g transform="translate(28, 5)">
+      <rect x="0" y="15" width="3" height="5" fill="#10B981"/>
+      <rect x="4" y="12" width="3" height="8" fill="#10B981"/>
+      <rect x="8" y="8" width="3" height="12" fill="#10B981"/>
+      <rect x="12" y="10" width="3" height="10" fill="#10B981"/>
+    </g>
+  </g>
+  
+  <!-- Text -->
+  <text x="60" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">
+    TradieMate
+  </text>
+  <text x="60" y="42" font-family="Arial, sans-serif" font-size="12" fill="#9CA3AF">
+    Marketing Analytics
+  </text>
+</svg>
