@@ -13,9 +13,18 @@ This is a simple FastAPI server that uses CrewAI and Neo4j MCP to process querie
 2. Run `poetry install`
 
 
+## Run the crew_manager as a script
+```
+
+poetry run python crew_manager.py
+
+```
+
 ## Start FastAPI Server
 ```
+
 poetry run uvicorn main:app --reload --port 4000
+
 ```
 
 Interactive docs will be accessible at:
