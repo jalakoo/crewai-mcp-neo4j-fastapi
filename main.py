@@ -6,13 +6,12 @@ import os
 app = FastAPI()
 
 @app.get("/crewai")
-async def command_crew_endpoint(prompt: str = Query(..., 
+async def prompt_crew_endpoint(prompt: str = Query(..., 
     description="The prompt / command to process",
     example="How many records are there?")):
 
     print(f'/crewai endpoint: Input prompt: {prompt}')
-    result = run(prompt)
-    return result
+    return run(prompt)
 
 
 if __name__ == "__main__":

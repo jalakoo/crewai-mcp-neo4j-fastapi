@@ -17,6 +17,7 @@ from mcp import StdioServerParameters
 from dotenv import load_dotenv
 import os
 
+# Load .env file
 load_dotenv()
 
 # Create a StdioServerParameters object
@@ -47,38 +48,42 @@ def log_task_callback(output):
     """
     )
 
-def mcp_crew(tools):
-
-    print(f"Available tools from MCP server(s): {[tool.name for tool in tools]}")
-
-    analyst_agent = Agent(
-        role="MCP Tool User",
-        goal="Utilize tools from MCP servers.",
-        backstory="I can connect to MCP servers and use their tools.",
-        tools=tools,
-        max_iterations=3,
-        reasoning=False,  # Optional
-        verbose=False,  # Optional
-        step_callback=log_step_callback,  # Optional
-        # llm=llm, # Optional - Remove if using OpenAI
-    )
-
-    # Passing query directly into task
-    processing_task = Task(
-        description="""Process the following prompt about the Neo4j graph database: {prompt}""",
-        expected_output="A brief report on the outcome of the command: {prompt}",
-        agent=analyst_agent,
-        callback=log_task_callback,  # Optional
-    )
-
-    return Crew(agents=[analyst_agent], tasks=[processing_task], verbose=False)
 
 # Convenience for fastAPI call
 def run(prompt: str):
+    
+    # Load the MCP Tools
     with MCPServerAdapter(server_params) as tools:
-        crew = mcp_crew(tools)
+
+        print(f"Available tools from MCP server(s): {[tool.name for tool in tools]}")
+
+        # Create an agent with access to tools
+        mcp_agent = Agent(
+            role="MCP Tool User",
+            goal="Utilize tools from MCP servers.",
+            backstory="I can connect to MCP servers and use their tools.",
+            tools=tools,
+            max_iterations=3,
+            step_callback=log_step_callback,  # Optional
+            # llm=llm, # Optional - Remove if using OpenAI
+        )
+
+        # Create a task referrencing user prompt
+        processing_task = Task(
+            description="""Process the following prompt about the Neo4j graph database: {prompt}""",
+            expected_output="A brief report on the outcome of the command: {prompt}",
+            agent=mcp_agent,
+            callback=log_task_callback,  # Optional
+        )
+
+        # Create the crew
+        crew = Crew(agents=[mcp_agent], tasks=[processing_task], verbose=False)
+
+        # Run the crew w/ the user prompt
         result = crew.kickoff(inputs={"prompt": prompt})
-    return {"result": result}
+
+        # Return the final answer
+        return {"result": result}
 
 
 # For running as a script
