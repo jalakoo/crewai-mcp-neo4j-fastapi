@@ -1,20 +1,18 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from cai import run_crew_query
+from fastapi import FastAPI, Query
+from crew_manager import run
 import uvicorn
 import os
 
-class QueryRequest(BaseModel):
-    query: str
-
 app = FastAPI()
 
-@app.post("/crewai")
-async def query_crew_endpoint(request: QueryRequest):
+@app.get("/crewai")
+async def prompt_crew_endpoint(prompt: str = Query(..., 
+    description="The prompt / command to process",
+    example="How many records are there?")):
 
-    print(f'/query endpoint: Input query: {request.query}')
+    print(f'/crewai endpoint: Input prompt: {prompt}')
+    return run(prompt)
 
-    return run_crew_query(request.query)
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 4000))

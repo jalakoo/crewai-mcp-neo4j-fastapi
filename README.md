@@ -1,6 +1,6 @@
 # FastAPI server using CrewAI and Neo4j MCP
 
-This is a simple FastAPI server that uses CrewAI and Neo4j MCP to process queries about the data within a Neo4j graph database.
+This is a simple FastAPI server that uses CrewAI and Neo4j MCP to process commands for creating or reading data in a Neo4j graph database.
 
 ## Requirements
 - [Poetry](https://python-poetry.org) for virtual env and dependency management
@@ -13,10 +13,23 @@ This is a simple FastAPI server that uses CrewAI and Neo4j MCP to process querie
 2. Run `poetry install`
 
 
+## Run the crew_manager as a script
+```
+
+poetry run python crew_manager.py
+
+```
+
 ## Start FastAPI Server
 ```
+
 poetry run uvicorn main:app --reload --port 4000
+
 ```
 
 Interactive docs will be accessible at:
 http://127.0.0.1:8000/docs
+
+
+## License
+MIT License

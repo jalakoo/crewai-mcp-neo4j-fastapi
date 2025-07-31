@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "crewai-mcp-neo4j-fastapi"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = ["jalakoo <jalakoo@gmail.com>"]
 readme = "README.md"
@@ -10,8 +10,8 @@ python = "3.11.11"
 uvicorn = "^0.34.3"
 crewai = "^0.121.1"
 crewai-tools = {extras = ["mcp"], version = "^0.46.0"}
-pydantic = "^2.11.5"
 fastapi = "^0.115.12"
+python-dotenv = "^1.1.1"
 
 
 [build-system]
